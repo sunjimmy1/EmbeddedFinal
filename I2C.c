@@ -81,8 +81,8 @@ unsigned char SlaveAddress[] = { 0x3C };
 unsigned char TXByteCtr;
 unsigned char SlaveFlag = 0;
 
-unsigned char text1[] = { "1               " };//{ "      Hello     " };
-unsigned char text2[] = { "2               " };//{ "      World     " };
+unsigned char text1[] = { "      Hello    " };//{ "      Hello     " };
+unsigned char text2[] = { "      World    " };//{ "      World     " };
 
 void output()
 {
@@ -90,13 +90,13 @@ void output()
 
     command(0x01);
     __delay_cycles(200);
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 15; i++)
     {
         data(text1[i]);
     }
 
     command(0xA0);
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 15; i++)
     {
         data(text2[i]);
     }
@@ -110,13 +110,13 @@ void blocks()
     command(0x01);
     __delay_cycles(200);
 
-    for (i = 02; i < 16; i++)
+    for (i = 0; i < 15; i++)
     {
         data(0x1F);
     }
 
     command(0xA0);
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 15; i++)
     {
         data(0x1F);
     }
@@ -175,7 +175,7 @@ void initOled()
     command(0x2A);  //function set (extended command set)
     command(0x79);  //OLED command set enabled
     command(0xDA);  //set SEG pins hardware configuration
-    command(0x10); //set SEG pins ... NOTE: When using NHD-0216AW-XB3 or NHD_0216MW_XB3 change to (0x00)
+    command(0x00); //set SEG pins ... NOTE: When using NHD-0216AW-XB3 or NHD_0216MW_XB3 change to (0x00)
     command(0xDC);  //function selection C
     command(0x00);  //function selection C
     command(0x81);  //set contrast control
