@@ -18,6 +18,8 @@ msp430fr235x_eusci_i2c_standard_master.obj: /opt/ccstudio/ccs/tools/compiler/ti-
 msp430fr235x_eusci_i2c_standard_master.obj: /opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/machine/_stdint.h
 msp430fr235x_eusci_i2c_standard_master.obj: /opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/sys/_stdint.h
 msp430fr235x_eusci_i2c_standard_master.obj: /opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdbool.h
+msp430fr235x_eusci_i2c_standard_master.obj: /opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdio.h
+msp430fr235x_eusci_i2c_standard_master.obj: /opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdarg.h
 
 ../msp430fr235x_eusci_i2c_standard_master.c:
 
@@ -54,4 +56,8 @@ msp430fr235x_eusci_i2c_standard_master.obj: /opt/ccstudio/ccs/tools/compiler/ti-
 /opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/sys/_stdint.h:
 
 /opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdbool.h:
+
+/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdio.h:
+
+/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include/stdarg.h:
 

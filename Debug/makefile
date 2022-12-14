@@ -119,34 +119,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-msp430fr235x_eusci_i2c_standard_master.c.out \
+EmbeddedFinal\ Project.out \
 
 EXE_OUTPUTS__QUOTED += \
-"msp430fr235x_eusci_i2c_standard_master.c.out" \
+"EmbeddedFinal Project.out" \
 
 BIN_OUTPUTS += \
-msp430fr235x_eusci_i2c_standard_master.c.hex \
+EmbeddedFinal\ Project.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"msp430fr235x_eusci_i2c_standard_master.c.hex" \
+"EmbeddedFinal Project.hex" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "msp430fr235x_eusci_i2c_standard_master.c.out"
+	@$(MAKE) --no-print-directory -Onone "EmbeddedFinal Project.out"
 
 # Tool invocations
-msp430fr235x_eusci_i2c_standard_master.c.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+EmbeddedFinal\ Project.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/cl430" -vmspx --use_hw_mpy=F5 --advice:power=all --advice:hw_config=all --define=__MSP430FR2355__ --define=_FRWP_ENABLE --define=_INFO_FRWP_ENABLE -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"msp430fr235x_eusci_i2c_standard_master.c.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"/opt/ccstudio/ccs/ccs_base/msp430/include" -i"/opt/ccstudio/ccs/ccs_base/msp430/lib/FR2xx" -i"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib" -i"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include" --priority --reread_libs --define=_FRWP_ENABLE --define=_INFO_FRWP_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="msp430fr235x_eusci_i2c_standard_master.c_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "msp430fr235x_eusci_i2c_standard_master.c.out" $(ORDERED_OBJS)
+	"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/cl430" -vmspx --use_hw_mpy=F5 --advice:power="all" --advice:hw_config=all --define=__MSP430FR2355__ --define=_FRWP_ENABLE --define=_INFO_FRWP_ENABLE -g --printf_support=full --diag_warning=225 --diag_wrap=off --display_error_number --silicon_errata=CPU21 --silicon_errata=CPU22 --silicon_errata=CPU40 -z -m"EmbeddedFinal Project.map" --heap_size=160 --stack_size=160 --cinit_hold_wdt=on -i"/opt/ccstudio/ccs/ccs_base/msp430/include" -i"/opt/ccstudio/ccs/ccs_base/msp430/lib/FR2xx" -i"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/lib" -i"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/include" --priority --reread_libs --define=_FRWP_ENABLE --define=_INFO_FRWP_ENABLE --diag_wrap=off --display_error_number --warn_sections --xml_link_info="EmbeddedFinal Project_linkInfo.xml" --use_hw_mpy=F5 --rom_model -o "EmbeddedFinal Project.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
-msp430fr235x_eusci_i2c_standard_master.c.hex: $(EXE_OUTPUTS)
+EmbeddedFinal\ Project.hex: $(EXE_OUTPUTS)
 	@echo 'Building secondary target: "$@"'
 	@echo 'Invoking: MSP430 Hex Utility'
-	"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "msp430fr235x_eusci_i2c_standard_master.c.hex" $(EXE_OUTPUTS__QUOTED)
+	"/opt/ccstudio/ccs/tools/compiler/ti-cgt-msp430_21.6.1.LTS/bin/hex430" --memwidth=8 --romwidth=8 --diag_wrap=off -o "EmbeddedFinal Project.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building secondary target: "$@"'
 	@echo ' '
 

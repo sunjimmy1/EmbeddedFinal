@@ -28,6 +28,7 @@
 #include <msp430.h> 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 //******************************************************************************
 // Pin Config ******************************************************************
@@ -74,7 +75,7 @@
  * sent by the slave to the master.
  * */
 
-uint8_t MasterType2[TYPE_2_LENGTH] = { 0x33, 0x00 };
+uint8_t MasterType2[TYPE_2_LENGTH] = { 0x00, 0x40 };
 uint8_t MasterType1[TDataLength] = { 8, 9 };
 uint8_t MasterType0[HDataLength] = { 11 };
 
@@ -86,6 +87,9 @@ unsigned long RawTemp = 0;
 float Temp = 0;
 unsigned long RawHumidity = 0;
 float Humidity = 0;
+char tempStr[16] = { "                " };
+char humStr[16] = { "                " };
+;
 //******************************************************************************
 // General I2C State Machine ***************************************************
 //******************************************************************************
@@ -153,6 +157,39 @@ I2C_Mode I2C_Master_ReadReg(uint8_t dev_addr, uint8_t reg_addr, uint8_t count);
 void CopyArray(uint8_t *source, uint8_t *dest, uint8_t count,
                uint8_t startIndex);
 
+void command(uint8_t data);
+void data(uint8_t data);
+void blocks();
+void initOled();
+void output(char *line1, char *line2);
+
+void output(char *line1, char *line2)
+{
+    int i;
+
+    command(0x01);
+    __delay_cycles(200);
+    for (i = 0; i < 16; i++)
+    {
+        data((uint8_t) line1[i]);
+    }
+
+    command(0xA0);
+    for (i = 0; i < 16; i++)
+    {
+        data((uint8_t) line2[i]);
+    }
+}
+
+void command(uint8_t data)
+{
+    I2C_Master_WriteReg(0x3C, 0x00, &data, 1);
+}
+
+void data(uint8_t data)
+{
+    I2C_Master_WriteReg(0x3C, 0x42, &data, 1);
+}
 I2C_Mode I2C_Master_ReadReg(uint8_t dev_addr, uint8_t reg_addr, uint8_t count)
 {
     /* Initialize state machine */
@@ -264,6 +301,61 @@ void initI2C()
     UCB1IE |= UCNACKIE;
 }
 
+void initOled()
+{
+    command(0x2A);  //function set (extended command set)
+    command(0x71);  //function selection A, disable internal Vdd regualtor
+    data(0x00);
+    command(0x28);  //function set (fundamental command set)
+    command(0x08);  //display off, cursor off, blink off
+    command(0x2A);  //function set (extended command set)
+    command(0x79);  //OLED command set enabled
+    command(0xD5);  //set display clock divide ratio/oscillator frequency
+    command(0x70);  //set display clock divide ratio/oscillator frequency
+    command(0x78);  //OLED command set disabled
+    command(0x09);  //extended function set (4-lines)
+    command(0x06);  //COM SEG direction
+    command(0x72);  //function selection B, disable internal Vdd regualtor
+    data(0x00);     //ROM CGRAM selection
+    command(0x2A);  //function set (extended command set)
+    command(0x79);  //OLED command set enabled
+    command(0xDA);  //set SEG pins hardware configuration
+    command(0x00); //set SEG pins ... NOTE: When using NHD-0216AW-XB3 or NHD_0216MW_XB3 change to (0x00)
+    command(0xDC);  //function selection C
+    command(0x00);  //function selection C
+    command(0x81);  //set contrast control
+    command(0x7F);  //set contrast control
+    command(0xD9);  //set phase length
+    command(0xF1);  //set phase length
+    command(0xDB);  //set VCOMH deselect level
+    command(0x40);  //set VCOMH deselect level
+    command(0x78);  //OLED command set disabled
+    command(0x28);  //function set (fundamental command set)
+    command(0x01);  //clear display
+    command(0x80);  //set DDRAM address to 0x00
+    command(0x0C);  //display ON
+    __delay_cycles(200);
+}
+
+void blocks()
+{
+    int i;
+
+    command(0x01);
+    __delay_cycles(200);
+
+    for (i = 0; i < 15; i++)
+    {
+        data(0x1F);
+    }
+
+    command(0xA0);
+    for (i = 0; i < 15; i++)
+    {
+        data(0x1F);
+    }
+}
+
 //******************************************************************************
 // Main ************************************************************************
 // Send and receive three messages containing the example commands *************
@@ -276,36 +368,34 @@ int main(void)
     initGPIO();
     initI2C();
 
-//    I2C_Master_WriteReg(SLAVE_ADDR, CMD_TYPE_0_MASTER, MasterType0, HDataLength);
-//    I2C_Master_WriteReg(SLAVE_ADDR, CMD_TYPE_1_MASTER, MasterType1, TDataLength);
-//    I2C_Master_WriteReg(SLAVE_ADDR, CMD_TYPE_2_MASTER, MasterType2, TYPE_2_LENGTH);
+    initOled();
+    blocks();
+    while (1)
+    {
+        I2C_Master_ReadReg(SLAVE_ADDR, 0x00, 3);
+        __no_operation();
+        __delay_cycles(30000);
+        I2C_Master_ReadReg(SLAVE_ADDR, 0x71, 1);
+        I2C_Master_WriteReg(SLAVE_ADDR, 0xAC, MasterType2, 2);
+        __delay_cycles(30000);
+        I2C_Master_ReadReg(SLAVE_ADDR, 0x71, 6);
+        CopyArray(ReceiveBuffer, HumidityData, HDataLength, 1);
+        CopyArray(ReceiveBuffer, TempData, TDataLength, 3);
+        RawHumidity = (HumidityData[2] >> 4) | (HumidityData[1] << 4)
+                | ((long) HumidityData[0] << 12);
+        Humidity = (float) (RawHumidity >> 4);
+        Humidity = (Humidity / 65536) * 100;
 
-    I2C_Master_ReadReg(SLAVE_ADDR, 0x71, 1);
-    I2C_Master_WriteReg(SLAVE_ADDR, 0xAC, MasterType2, 2);
-    __delay_cycles(30000);
-    I2C_Master_ReadReg(SLAVE_ADDR, 0x71, 6);
-
-    CopyArray(ReceiveBuffer, HumidityData, HDataLength, 1);
-    CopyArray(ReceiveBuffer, TempData, TDataLength, 3);
-    RawHumidity = (HumidityData[2] >> 4) | (HumidityData[1] << 4)
-            | ((long) HumidityData[0] << 12);
-    Humidity = (float) (RawHumidity >> 4);
-    Humidity = (Humidity / 65536) * 100;
-
-    RawTemp = ((long) (TempData[0] & 0x0F) << 16) | ( (long) TempData[1] << 8)
-            | TempData[2];
-    Temp = (float) (RawTemp >> 4);
-    Temp = ((((Temp / 65536) * 200 - 50)*9)/5)+32;
-    __no_operation();
-//
-//    I2C_Master_ReadReg(SLAVE_ADDR, CMD_TYPE_1_SLAVE,2 TDataLength);
-//    CopyArray(ReceiveBuffer, SlaveType1, TDataLength);
-//
-//    I2C_Master_ReadReg(SLAVE_ADDR, CMD_TYPE_2_SLAVE, TYPE_2_LENGTH);
-//    CopyArray(ReceiveBuffer, SlaveType2, TYPE_2_LENGTH);
-
-    __bis_SR_register(LPM0_bits + GIE);
-    return 0;
+        RawTemp = ((long) (TempData[0] & 0x0F) << 16)
+                | ((long) TempData[1] << 8) | TempData[2];
+        Temp = (float) (RawTemp >> 4);
+        Temp = ((((Temp / 65536) * 200 - 50) * 9) / 5) + 32;
+        sprintf(humStr, "Humidity: %2.2f%%", Humidity);
+        sprintf(tempStr, "Temp: %2.2fF    ", Temp);
+        output(humStr, tempStr);
+        __no_operation();
+        __delay_cycles(5000000);
+    }
 }
 
 //******************************************************************************
