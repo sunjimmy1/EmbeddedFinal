@@ -7,21 +7,27 @@ CMD_SRCS += \
 ../lnk_msp430fr2355.cmd 
 
 C_SRCS += \
-../msp430fr235x_eusci_i2c_standard_master.c 
+../I2C.c \
+../main.c 
 
 C_DEPS += \
-./msp430fr235x_eusci_i2c_standard_master.d 
+./I2C.d \
+./main.d 
 
 OBJS += \
-./msp430fr235x_eusci_i2c_standard_master.obj 
+./I2C.obj \
+./main.obj 
 
 OBJS__QUOTED += \
-"msp430fr235x_eusci_i2c_standard_master.obj" 
+"I2C.obj" \
+"main.obj" 
 
 C_DEPS__QUOTED += \
-"msp430fr235x_eusci_i2c_standard_master.d" 
+"I2C.d" \
+"main.d" 
 
 C_SRCS__QUOTED += \
-"../msp430fr235x_eusci_i2c_standard_master.c" 
+"../I2C.c" \
+"../main.c" 
 
 

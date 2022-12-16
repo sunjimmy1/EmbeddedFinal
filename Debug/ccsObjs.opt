@@ -1,1 +1,1 @@
-"./msp430fr235x_eusci_i2c_standard_master.obj" "../lnk_msp430fr2355.cmd" -lfrwp_init.a -llibc.a 
+"./I2C.obj" "./main.obj" "../lnk_msp430fr2355.cmd" -lfrwp_init.a -llibc.a 
