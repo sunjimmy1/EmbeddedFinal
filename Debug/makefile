@@ -9,6 +9,10 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./I2C.obj" \
+"./LCD.obj" \
+"./Pressure.obj" \
+"./TempHum.obj" \
+"./UART.obj" \
 "./main.obj" \
 "../lnk_msp430fr2355.cmd" \
 $(GEN_CMDS__FLAG) \
@@ -154,8 +158,8 @@ EmbeddedFinal\ Project.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "I2C.obj" "main.obj" 
-	-$(RM) "I2C.d" "main.d" 
+	-$(RM) "I2C.obj" "LCD.obj" "Pressure.obj" "TempHum.obj" "UART.obj" "main.obj" 
+	-$(RM) "I2C.d" "LCD.d" "Pressure.d" "TempHum.d" "UART.d" "main.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

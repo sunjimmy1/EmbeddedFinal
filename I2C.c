@@ -80,58 +80,35 @@ void CopyArray(uint8_t *source, uint8_t *dest, uint8_t count,
     }
 }
 
-void blocks()
-{
-    int i;
 
-    LCDcommand(0x01);
-    __delay_cycles(200);
-
-    for (i = 0; i < 15; i++)
-    {
-        LCDdata(0x1F);
-    }
-
-    LCDcommand(0xA0);
-    for (i = 0; i < 15; i++)
-    {
-        LCDdata(0x1F);
-    }
-}
-
-void display(char *line1, char *line2)
-{
-    int i;
-
-    LCDcommand(0x01);
-    __delay_cycles(200);
-    for (i = 0; i < 16; i++)
-    {
-        LCDdata((uint8_t) line1[i]);
-    }
-
-    LCDcommand(0xA0);
-    for (i = 0; i < 16; i++)
-    {
-        LCDdata((uint8_t) line2[i]);
-    }
-}
-
-void LCDcommand(uint8_t data)
-{
-    I2C_Master_WriteReg(0x3C, 0x00, &data, 1);
-}
-
-void LCDdata(uint8_t data)
-{
-    I2C_Master_WriteReg(0x3C, 0x42, &data, 1);
-}
 
 I2C_Mode I2C_Master_ReadReg(uint8_t dev_addr, uint8_t reg_addr, uint8_t count)
 {
     /* Initialize state machine */
     MasterMode = TX_REG_ADDRESS_MODE;
     TransmitRegAddr = reg_addr;
+    RXByteCtr = count;
+    TXByteCtr = 0;
+    ReceiveIndex = 0;
+    TransmitIndex = 0;
+
+    /* Initialize slave address and interrupts */
+    UCB1I2CSA = dev_addr;
+    UCB1IFG &= ~(UCTXIFG + UCRXIFG); // CTransmitRegAddrlear any pending interrupts
+    UCB1IE &= ~UCRXIE;                       // Disable RX interrupt
+    UCB1IE |= UCTXIE;                        // Enable TX interrupt
+
+    UCB1CTLW0 |= UCTR + UCTXSTT;             // I2C TX, start condition
+    __bis_SR_register(LPM0_bits + GIE);              // Enter LPM0 w/ interrupts
+
+    return MasterMode;
+
+}
+
+I2C_Mode I2C_Master_Read(uint8_t dev_addr, uint8_t count)
+{
+    /* Initialize state machine */
+    MasterMode = SWITCH_TO_RX_MODE;
     RXByteCtr = count;
     TXByteCtr = 0;
     ReceiveIndex = 0;
@@ -175,42 +152,6 @@ I2C_Mode I2C_Master_WriteReg(uint8_t dev_addr, uint8_t reg_addr,
     __bis_SR_register(LPM0_bits + GIE);              // Enter LPM0 w/ interrupts
     __no_operation();
     return MasterMode;
-}
-
-void initLCD()
-{
-    LCDcommand(0x2A);  //function set (extended LCDcommand set)
-    LCDcommand(0x71);  //function selection A, disable internal Vdd regualtor
-    LCDdata(0x00);
-    LCDcommand(0x28);  //function set (fundamental LCDcommand set)
-    LCDcommand(0x08);  //display off, cursor off, blink off
-    LCDcommand(0x2A);  //function set (extended LCDcommand set)
-    LCDcommand(0x79);  //OLED LCDcommand set enabled
-    LCDcommand(0xD5);  //set display clock divide ratio/oscillator frequency
-    LCDcommand(0x70);  //set display clock divide ratio/oscillator frequency
-    LCDcommand(0x78);  //OLED LCDcommand set disabled
-    LCDcommand(0x09);  //extended function set (4-lines)
-    LCDcommand(0x06);  //COM SEG direction
-    LCDcommand(0x72);  //function selection B, disable internal Vdd regualtor
-    LCDdata(0x00);     //ROM CGRAM selection
-    LCDcommand(0x2A);  //function set (extended LCDcommand set)
-    LCDcommand(0x79);  //OLED LCDcommand set enabled
-    LCDcommand(0xDA);  //set SEG pins hardware configuration
-    LCDcommand(0x00); //set SEG pins ... NOTE: When using NHD-0216AW-XB3 or NHD_0216MW_XB3 change to (0x00)
-    LCDcommand(0xDC);  //function selection C
-    LCDcommand(0x00);  //function selection C
-    LCDcommand(0x81);  //set contrast control
-    LCDcommand(0x7F);  //set contrast control
-    LCDcommand(0xD9);  //set phase length
-    LCDcommand(0xF1);  //set phase length
-    LCDcommand(0xDB);  //set VCOMH deselect level
-    LCDcommand(0x40);  //set VCOMH deselect level
-    LCDcommand(0x78);  //OLED LCDcommand set disabled
-    LCDcommand(0x28);  //function set (fundamental LCDcommand set)
-    LCDcommand(0x01);  //clear display
-    LCDcommand(0x80);  //set DDRAM address to 0x00
-    LCDcommand(0x0C);  //display ON
-    __delay_cycles(200);
 }
 
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)

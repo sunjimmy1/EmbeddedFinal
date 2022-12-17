@@ -21,7 +21,7 @@ typedef enum I2C_ModeEnum
     TX_DATA_MODE,
     RX_DATA_MODE,
     SWITCH_TO_RX_MODE,
-    SWITHC_TO_TX_MODE,
+    SWITCH_TO_TX_MODE,
     TIMEOUT_MODE
 } I2C_Mode;
 
@@ -30,14 +30,12 @@ uint8_t* getRXBuffer();
 void initGPIO();
 void initClockTo16MHz();
 void initI2C();
-void initLCD();
-void LCDcommand(uint8_t cmd);
-void LCDdata(uint8_t data);
-void blocks();
-void display(char *line1, char *line2);
+
 I2C_Mode I2C_Master_WriteReg(uint8_t dev_addr, uint8_t reg_addr,
                              uint8_t *reg_data, uint8_t count);
 I2C_Mode I2C_Master_ReadReg(uint8_t dev_addr, uint8_t reg_addr, uint8_t count);
+I2C_Mode I2CMaster_Write(uint8_t dev_addr, uint8_t *data, uint8_t count);
+I2C_Mode I2CMaster_Read(uint8_t dev_addr, uint8_t count);
 void CopyArray(uint8_t *source, uint8_t *dest, uint8_t count,
                uint8_t startIndex);
 #endif /* I2C_H_ */
