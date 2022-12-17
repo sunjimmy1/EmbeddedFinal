@@ -31,6 +31,15 @@ uint8_t* getRXBuffer(){
     return ReceiveBuffer;
 }
 
+void uninitI2C(){
+    UCB1IE &= ~UCNACKIE;
+}
+void reinitI2C(){
+    UCB1IE |= UCNACKIE;
+}
+
+
+
 void initGPIO()
 {
     // I2C pins
@@ -39,7 +48,6 @@ void initGPIO()
 
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configured port settings
-    PM5CTL0 &= ~LOCKLPM5;
 }
 
 void initClockTo16MHz()

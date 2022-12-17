@@ -5,6 +5,7 @@
  *      Author: jimmy
  */
 #include <I2C.h>
+#include <LCD.h>
 void blocks()
 {
     int i;

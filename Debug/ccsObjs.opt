@@ -1,1 +1,1 @@
-"./I2C.obj" "./LCD.obj" "./Pressure.obj" "./TempHum.obj" "./UART.obj" "./main.obj" "../lnk_msp430fr2355.cmd" -lfrwp_init.a -llibc.a 
+"./ADC.obj" "./I2C.obj" "./LCD.obj" "./TempHum.obj" "./UART.obj" "./main.obj" "../lnk_msp430fr2355.cmd" -lfrwp_init.a -llibc.a 

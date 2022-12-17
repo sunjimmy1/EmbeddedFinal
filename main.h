@@ -12,5 +12,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <I2C.h>
+#include <LCD.h>
+#include <TempHum.h>
+#include <UART.h>
+#include <ADC.h>
 
 #endif /* MAIN_H_ */
