@@ -31,21 +31,12 @@ uint8_t* getRXBuffer(){
     return ReceiveBuffer;
 }
 
-void uninitI2C(){
-    UCB1IE &= ~UCNACKIE;
-}
-void reinitI2C(){
-    UCB1IE |= UCNACKIE;
-}
-
-
-
 void initGPIO()
 {
     // I2C pins
     P4SEL0 |= BIT6 | BIT7;
     P4SEL1 &= ~(BIT6 | BIT7);
-
+    //PM5CTL0 &= ~LOCKLPM5;
     // Disable the GPIO power-on default high-impedance mode to activate
     // previously configured port settings
 }
@@ -95,28 +86,6 @@ I2C_Mode I2C_Master_ReadReg(uint8_t dev_addr, uint8_t reg_addr, uint8_t count)
     /* Initialize state machine */
     MasterMode = TX_REG_ADDRESS_MODE;
     TransmitRegAddr = reg_addr;
-    RXByteCtr = count;
-    TXByteCtr = 0;
-    ReceiveIndex = 0;
-    TransmitIndex = 0;
-
-    /* Initialize slave address and interrupts */
-    UCB1I2CSA = dev_addr;
-    UCB1IFG &= ~(UCTXIFG + UCRXIFG); // CTransmitRegAddrlear any pending interrupts
-    UCB1IE &= ~UCRXIE;                       // Disable RX interrupt
-    UCB1IE |= UCTXIE;                        // Enable TX interrupt
-
-    UCB1CTLW0 |= UCTR + UCTXSTT;             // I2C TX, start condition
-    __bis_SR_register(LPM0_bits + GIE);              // Enter LPM0 w/ interrupts
-
-    return MasterMode;
-
-}
-
-I2C_Mode I2C_Master_Read(uint8_t dev_addr, uint8_t count)
-{
-    /* Initialize state machine */
-    MasterMode = SWITCH_TO_RX_MODE;
     RXByteCtr = count;
     TXByteCtr = 0;
     ReceiveIndex = 0;

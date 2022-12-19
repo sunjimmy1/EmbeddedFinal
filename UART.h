@@ -18,6 +18,8 @@ void port_init();
 void transmit(char *TXData);
 void Software_Trim();
 void configureClocks();
+void strreverse(char *begin, char *end);
+void itoa(int value, char* str, int base);
 
 #define MCLK_FREQ_MHZ 1                     // MCLK = 1MHz
 

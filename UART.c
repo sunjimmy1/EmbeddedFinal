@@ -149,3 +149,10 @@ void Software_Trim()
     while (CSCTL7 & (FLLUNLOCK0 | FLLUNLOCK1))
         ; // Poll until FLL is locked
 }
+
+void strreverse(char *begin, char *end) // Function to reverse the order of the ASCII char arrayelements
+{
+    char aux;
+    while (end > begin)
+        aux = *end, *end-- = *begin, *begin++ = aux;
+}
