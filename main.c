@@ -1,10 +1,10 @@
 #include <main.h>
 
 float *tempData;
-const char tempHead[16] = { "Temperature:    " };
-const char humHead[16] = { "Humidity:       " };
-const char lightHead[16] = { "Light Level:    " };
-char dataStr[16] = { "                " };
+char tempHead[17] = { "Temperature:     " };
+char humHead[17] = { "Humidity:        " };
+char lightHead[17] = { "Light Level:     " };
+char dataStr[17] = { "                 " };
 int lightLevel = 0;
 char tsString[20];
 /**
@@ -29,19 +29,19 @@ int main(void)
     while (1)
     {
         tempData = readTempData();
-        sprintf(dataStr, "%2.2f%%              ", tempData[1]);
-        display(humHead, dataStr);
+        sprintf(dataStr, "%2.2f           ", tempData[1]);
+        display(humHead, dataStr);//Hum
         __delay_cycles(800000);
-        sprintf(dataStr, "%2.2fF              ", tempData[0]);
+        sprintf(dataStr, "%2.2f            ", tempData[0]);
         display(tempHead, dataStr);
         __delay_cycles(800000);
         _BIC_SR(GIE);
         lightLevel = readADCSingle();
         _BIS_SR(GIE);
         //itoa(lightLevel, tsString, 10);
-        sprintf(tsString, "%i", lightLevel);
+        sprintf(tsString, "%i             ", lightLevel);
         transmit(tsString);
-        sprintf(dataStr, "%i                  ", lightLevel);
+        sprintf(dataStr, "%i              ", lightLevel);
         display(lightHead, dataStr);
         __delay_cycles(100000);
     }

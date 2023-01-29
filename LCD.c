@@ -1,12 +1,13 @@
 /*
  * LCD.c
- *
+ * A library to control the NHD-0216AW-IB3 OLED display module
  *  Created on: Dec 16, 2022
  *      Author: jimmy
  */
 #include <I2C.h>
 #include <LCD.h>
 void blocks()
+//Turns on all of the pixels in the display
 {
     int i;
 
@@ -26,29 +27,32 @@ void blocks()
 }
 
 void display(char *line1, char *line2)
+//Writes the given strings to the LCD to display
 {
     int i;
 
     LCDcommand(0x01);
     __delay_cycles(200);
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 15; i++)
     {
         LCDdata((uint8_t) line1[i]);
     }
 
     LCDcommand(0xA0);
-    for (i = 0; i < 16; i++)
+    for (i = 0; i < 15; i++)
     {
         LCDdata((uint8_t) line2[i]);
     }
 }
 
 void LCDcommand(uint8_t data)
+//Sends the given command to the LCD
 {
     I2C_Master_WriteReg(0x3C, 0x00, &data, 1);
 }
 
 void LCDdata(uint8_t data)
+//Writes the given character to the LCD
 {
     I2C_Master_WriteReg(0x3C, 0x42, &data, 1);
 }
@@ -72,7 +76,7 @@ void initLCD()
     LCDcommand(0x2A);  //function set (extended LCDcommand set)
     LCDcommand(0x79);  //OLED LCDcommand set enabled
     LCDcommand(0xDA);  //set SEG pins hardware configuration
-    LCDcommand(0x00); //set SEG pins ... NOTE: When using NHD-0216AW-XB3 or NHD_0216MW_XB3 change to (0x00)
+    LCDcommand(0x00); //set SEG pins
     LCDcommand(0xDC);  //function selection C
     LCDcommand(0x00);  //function selection C
     LCDcommand(0x81);  //set contrast control
@@ -88,3 +92,4 @@ void initLCD()
     LCDcommand(0x0C);  //display ON
     __delay_cycles(200);
 }
+
